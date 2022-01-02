@@ -7,9 +7,9 @@ function I = residualDeconvolution(B, K, Nd, iter)
     gradientTotal = 0;
     NdPyramid = Nd;
     for i = 0 : L
-        NdPyramid = imgaussfilt(Nd, 0.5);
         [Gmag Gdir] = imgradient(NdPyramid);
         gradientTotal = gradientTotal + Gmag;
+        NdPyramid = imgaussfilt(NdPyramid, 0.5);
         NdPyramid = imresize(NdPyramid, 0.5);
     end
 
