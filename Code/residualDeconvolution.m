@@ -1,11 +1,11 @@
 function I = residualDeconvolution(B, K, Nd, iter)
     % dB = B - Nd conv K
-    dB = B - conv2(Nd, K, 'same');
+    dB = B - imfilter(Nd, double(K), 'conv');
     
     % calculate total gradient magnitude of gaussian pyramid.
-    L = 5;
-    gradientTotal = 0;
-    NdPyramid = Nd;
+    L = 0;
+    gradientTotal = zeros(size(B));
+    NdPyramid = rgb2gray(Nd);
     for i = 0 : L
         [Gmag Gdir] = imgradient(NdPyramid);
         gradientTotal = gradientTotal + Gmag;
@@ -18,7 +18,7 @@ function I = residualDeconvolution(B, K, Nd, iter)
     alpha = 0.2;
     Ig = (1 - alpha) + alpha * gradientTotal;
     for i = 1 : (iter - 1)
-        dI = Ig * deconvlucy(dI, K, 1);
+        dI = Ig .* deconvlucy(dI, K, 1);
     end
 
     % Do not multiply Ig in last iter.
