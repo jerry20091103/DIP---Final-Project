@@ -6,20 +6,15 @@ inputBlurImage = (im2single(imread("../Aligned Photos/2-2.png")));
 % aspect ratio is 3:2 !!!
 inputNoiseImage = rgb2gray(imresize(inputNoiseImage, [2000, 3000]));
 inputBlurImage = rgb2gray(imresize(inputBlurImage, [2000, 3000]));
-%kernel = estimateKernel(rgb2gray(inputNoiseImage), rgb2gray(inputBlurImage), 65, 10);
-%imshow(kenel);
-h = fft2(inputBlurImage) ./ fft2(inputNoiseImage);
-k = ifft2(h);
-for i = 1:size(k, 1)
-    for j = 2:size(k, 2)
-        if k(i, j) < 0
-            k(i, j) = 0;
-        end
-    end
-end
-k = k ./ sum(sum(k));
+% test
+%test_kernel = [0 0 0 0 0 0 1; 0 0 0 0 0 1 0; 0 0 0 0 1 0 0; 0 0 0 1 0 0 0; 0 0 1 0 0 0 0; 0 1 0 0 0 0 0; 0 0 0 0 0 0 0];
+%test_kernel = test_kernel ./ sum(sum(test_kernel));
+%inputBlurImage = conv2(inputNoiseImage, test_kernel, "same");
+subplot(2, 2, 1); imshow(inputNoiseImage);
+subplot(2, 2, 2); imshow(inputBlurImage);
+net = denoisingNetwork('DnCNN');
+inputDeNoise = denoiseImage(inputNoiseImage, net);
+subplot(2, 2, 3); imshow(inputDeNoise);
 
-imshow(k);
-
-%imshow(imfilter(inputNoiseImage, [0 0 0 0; 0 0 1 0; 0 0 0 0; 0 0 0 0], 'conv'));
-
+kernel = estimateKernel(inputDeNoise, (inputBlurImage), 11, 30)
+subplot(2, 2, 4); imshow(kernel);
