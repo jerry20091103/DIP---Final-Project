@@ -1,7 +1,7 @@
 clear;
 close all;
 
-inputNoiseImage = (im2single(imread("../Aligned Photos/2-1.png")));
+inputNoiseImage = (im2single(imread("../Aligned Photos/2-3.png")));
 inputBlurImage = (im2single(imread("../Aligned Photos/2-2.png")));
 % aspect ratio is 3:2 !!!
 inputNoiseImage = (inputNoiseImage(1201:1800, 1801:2700, :));
@@ -28,16 +28,30 @@ subplot(3, 3, 2); imshow(inputNoiseImage); title("noise image");
 subplot(3, 3, 3); imshow(inputBlurImage); title("blur image");
 inputDeNoise = imgaussfilt(inputNoiseImage, 2);
 subplot(3, 3, 4); imshow(inputDeNoise); title("denoised image");
-pause;
+%% 
+
 
 % use grayscale for kernel estimation
 kernel = estimateKernel(rgb2gray(inputDeNoise), rgb2gray(inputBlurImage), 21, 20)
 % filp the kernel
 kernel = flipud(fliplr(kernel));
 
+for i = 1:size(kernel, 1)
+    for j = 1:size(kernel, 2)
+        if kernel(i, j) < 0
+            kernel(i, j) = 0;
+        end
+    end
+end
+kernel = kernel / sum(sum(kernel));
+
+
 
 subplot(3, 3, 5); imshow(kernel); title("kernel");
-subplot(3, 3, 6); imshow(imfilter(inputDeNoise, double(kernel), 'conv')); title("blur the denoised image using estimated kernel");
-pause;
-result = residualDeconvolution(inputBlurImage, kernel, inputDeNoise, 20);
+blur_test = imfilter(inputDeNoise, double(kernel), 'conv');
+subplot(3, 3, 6); imshow(blur_test); title("blur the denoised image using estimated kernel");
+
+%% 
+[result, Id] = residualDeconvolution(inputBlurImage, kernel, inputDeNoise, 20);
 subplot(3, 3, 7); imshow(result); title("deconv result");
+subplot(3, 3, 8); imshow(Id);

@@ -1,4 +1,4 @@
-function I = residualDeconvolution(B, K, Nd, iter)
+function [res, Id] = residualDeconvolution(B, K, Nd, iter)
     % dB = B - Nd conv K
     dB = B - imfilter(Nd, double(K), 'conv');
     
@@ -12,10 +12,13 @@ function I = residualDeconvolution(B, K, Nd, iter)
         NdPyramid = imgaussfilt(NdPyramid, 0.5);
         NdPyramid = imresize(NdPyramid, 0.5);
     end
+    % residual deconv without de-ringing
+    dI = dB;
+    I = deconvlucy(dI, K, 20);
 
     % residual deconv with de-ringing
     dI = dB;
-    alpha = 0.2;
+    alpha = 0.5;
     Ig = (1 - alpha) + alpha * gradientTotal;
     for i = 1 : (iter - 1)
         dI = Ig .* deconvlucy(dI, K, 1);
@@ -24,5 +27,10 @@ function I = residualDeconvolution(B, K, Nd, iter)
     % Do not multiply Ig in last iter.
     dI = deconvlucy(dI, K, 1);
 
-    I = Nd + dI;
+    Igain = Nd + dI;
+
+    % add details
+    Id = I - imbilatfilt(I, 0.08, 1.6);
+    res = Igain + Id;
+
 end
