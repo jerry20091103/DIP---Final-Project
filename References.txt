@@ -1,0 +1,4 @@
+https://www.cs.ubc.ca/~nasarouf/projects/cpsc548/cpsc548-20080504.1.pdf
+https://www.cs.ubc.ca/~nasarouf/projects/cpsc548/
+https://patentimages.storage.googleapis.com/22/d0/0a/e834ef4eb3110b/US8654201.pdf
+https://github.com/alisaaalehi/convolution_as_multiplication
