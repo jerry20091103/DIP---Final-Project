@@ -32,7 +32,7 @@ subplot(3, 3, 4); imshow(inputDeNoise); title("denoised image");
 
 
 % use grayscale for kernel estimation
-kernel = estimateKernel(rgb2gray(inputDeNoise), rgb2gray(inputBlurImage), 21, 20)
+kernel = estimateKernel(rgb2gray(inputDeNoise), rgb2gray(inputBlurImage), 21, 20);
 % filp the kernel
 kernel = flipud(fliplr(kernel));
 
