@@ -24,8 +24,8 @@ function kernel = estimateKernel(inputNoise, inputBlur, n, iter)
     end
     
     %% solve the kernel
-    
-    rate = 0.1;
+    %{
+    rate = 1;
     lambda = 5;
     for i = 1:iter
         K = K + rate * (A'*B - (A'*A + lambda^2 * eye(size(A, 2))) * K);
@@ -39,11 +39,8 @@ function kernel = estimateKernel(inputNoise, inputBlur, n, iter)
         K = K / sum(K);
         
     end
-    
-    
-    
-    
-    %K = A\B;
+    %}
+    K = A\B;
     %% reshape and get the kernel
     kernel = reshape(K, n, n);
 end
