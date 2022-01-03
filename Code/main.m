@@ -1,7 +1,7 @@
 clear;
 close all;
 
-inputNoiseImage = (im2single(imread("../Aligned Photos/2-3.png")));
+inputNoiseImage = (im2single(imread("../Aligned Photos/1-1.png")));
 inputBlurImage = (im2single(imread("../Aligned Photos/2-2.png")));
 % aspect ratio is 3:2 !!!
 inputNoiseImage = (inputNoiseImage(1201:1800, 1801:2700, :));

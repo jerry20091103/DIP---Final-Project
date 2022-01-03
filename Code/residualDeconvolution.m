@@ -13,24 +13,26 @@ function [res, Id] = residualDeconvolution(B, K, Nd, iter)
         NdPyramid = imresize(NdPyramid, 0.5);
     end
     % residual deconv without de-ringing
-    dI = dB;
-    I = deconvlucy(dI, K, 20);
+    I = dB;
+    for i = 1:iter
+        I = imfilter((dB+1) ./ imfilter((I+1), double(K), 'conv'), double(K)) .* (I+1) - 1;
+    end
 
     % residual deconv with de-ringing
     dI = dB;
-    alpha = 0.5;
+    alpha = 0.2;
     Ig = (1 - alpha) + alpha * gradientTotal;
     for i = 1 : (iter - 1)
-        dI = Ig .* deconvlucy(dI, K, 1);
+        dI = Ig .* (imfilter((dB+1) ./ imfilter((dI+1), double(K), 'conv'), double(K)) .* (dI+1) - 1);
     end
 
     % Do not multiply Ig in last iter.
-    dI = deconvlucy(dI, K, 1);
+    dI = imfilter((dB+1) ./ imfilter((dI+1), double(K), 'conv'), double(K)) .* (dI+1) - 1;
 
     Igain = Nd + dI;
 
     % add details
-    Id = I - imbilatfilt(I, 0.08, 1.6);
+    Id = I - imbilatfilt(I, 0.5, 1.6);
     res = Igain + Id;
 
 end
